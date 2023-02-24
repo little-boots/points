@@ -2,16 +2,23 @@ version: '3.8'
 services:
   db:
     container_name: pg_container
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-q", "-d", "postgres", "-U", "root" ]
+      timeout: 45s
+      interval: 10s
+      retries: 10
     image: postgres
     restart: always
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: EwwSoggyTsukino
-      POSTGRES_DB: points_db
+      APP_DB_NAME: points
+      APP_DB_USER: points
+      APP_DB_PASS: RayHeKnow 
     ports:
       - "5432:5432"
     volumes:
-      - db-data:db
+      - ./db:/docker-entrypoint-initdb.d/
   pgadmin:
     container_name: pgadmin4_container
     image: dpage/pgadmin4
